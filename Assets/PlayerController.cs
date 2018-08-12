@@ -5,11 +5,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-    public bool isGrounded;
-    public float walkSpeed = 2f;
+
+    public bool isRunning;
+    public float walkSpeed = 3f;
+    public float runSpeed = 10f;
     public Rigidbody rbPlayer;
+    public bool isJumping;
     public Vector3 jump;
     public float jumpForce = 2.0f;
+    public bool isGrounded;
 
     // Use this for initialization
     void Start()
@@ -18,15 +22,45 @@ public class PlayerController : MonoBehaviour
         jump = new Vector3(0f, jumpForce, 0f);
     }
 
-    // Update is called once per frame
+
+    /*
+        Update() can vary out of step with the physics engine, either faster or slower, 
+        depending on how much of a load the graphics are putting on the rendering 
+        engine at any given time, which - if used for physics - would give 
+        correspondingly variant physical effects!
+     */
     void Update()
     {
-        Jump();
+
+        CallDefaultBehavior();
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            isJumping = true;
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            isRunning = true;
+        }
     }
 
+    /*
+        FixedUpdate should be used when applying forces, torques, or 
+        other physics-related functions - because you know it will 
+        be executed exactly in sync with the physics engine itself.
+        More on: https://stackoverflow.com/questions/34447682/what-is-the-difference-between-update-fixedupdate-in-unity
+    */
     private void FixedUpdate()
     {
         Move();
+        Jump();
+    }
+
+    private void CallDefaultBehavior()
+    {
+        isRunning = false;
+        isJumping = false;
     }
 
     private void OnCollisionStay(Collision other)
@@ -40,16 +74,26 @@ public class PlayerController : MonoBehaviour
         var moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         moveDirection = Camera.main.transform.TransformDirection(moveDirection);
         moveDirection.y = 0;
-        rbPlayer.MovePosition(rbPlayer.position + moveDirection * walkSpeed * Time.deltaTime);
+
+        if (isRunning)
+        {
+            rbPlayer.MovePosition(rbPlayer.position + moveDirection * runSpeed * Time.deltaTime);
+        }
+        else
+        {
+            rbPlayer.MovePosition(rbPlayer.position + moveDirection * walkSpeed * Time.deltaTime);
+        }
+
     }
 
     // Handles character jump behavior
     private void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (isJumping)
         {
-            rbPlayer.AddForce(jump * jumpForce, ForceMode.Impulse);
+            isJumping = !isJumping;
             isGrounded = false;
+            rbPlayer.AddForce(jump * jumpForce, ForceMode.Impulse);
         }
     }
 }
