@@ -6,43 +6,50 @@ public class PlayerController : MonoBehaviour
 {
 
     public bool isGrounded;
-    public float jumpForce = 2.0f;
+    public float walkSpeed = 2f;
     public Rigidbody rbPlayer;
-    public Vector3 vJump;
+    public Vector3 jump;
+    public float jumpForce = 2.0f;
 
     // Use this for initialization
     void Start()
     {
-		rbPlayer = GetComponent<Rigidbody>();
-		vJump = new Vector3(0f, jumpForce, 0f);
+        rbPlayer = GetComponent<Rigidbody>();
+        jump = new Vector3(0f, jumpForce, 0f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        HandlePlayerMovement();
+        Jump();
     }
 
-	private void OnCollisionStay(Collision other)
-	{
-		isGrounded = true;
-	}
-
-    private void HandlePlayerMovement()
+    private void FixedUpdate()
     {
-        // WSAD or Arrow Keys
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * 150f;
-        var z = Input.GetAxis("Vertical") * Time.deltaTime * 3f;
-
-        transform.Rotate(0, x, 0);
-        transform.Translate(x,0, z);
-
-		// Enables fps player to jump
-		if(Input.GetKeyDown(KeyCode.Space) && isGrounded){
-			rbPlayer.AddForce(vJump * jumpForce, ForceMode.Impulse);
-			isGrounded = false;
-		}
-
+        Move();
     }
 
+    private void OnCollisionStay(Collision other)
+    {
+        isGrounded = true;
+    }
+
+    // Handles character movement
+    private void Move()
+    {
+        var moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        moveDirection = Camera.main.transform.TransformDirection(moveDirection);
+        moveDirection.y = 0;
+        rbPlayer.MovePosition(rbPlayer.position + moveDirection * walkSpeed * Time.deltaTime);
+    }
+
+    // Handles character jump behavior
+    private void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rbPlayer.AddForce(jump * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
+        }
+    }
 }
