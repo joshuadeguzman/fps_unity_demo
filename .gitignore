@@ -35,3 +35,8 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+# 3rd Party Packages
+Assets/3rdPartyPackages
+
+# MacOS
+.DS_Store
