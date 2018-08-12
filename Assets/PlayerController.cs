@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public bool isGrounded;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         rbPlayer = GetComponent<Rigidbody>();
         jump = new Vector3(0f, jumpForce, 0f);
@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
         engine at any given time, which - if used for physics - would give 
         correspondingly variant physical effects!
      */
-    void Update()
+    private void Update()
     {
 
         CallDefaultBehavior();
