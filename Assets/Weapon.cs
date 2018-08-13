@@ -2,46 +2,78 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour {
+public class Weapon : MonoBehaviour
+{
 
-	public float fireRate = 10f;
-	public float nextFire = 0f;
-	public float damageAmount = 100f;
-	public float range = 100f;
-	public Camera playerCamera;
-	public ParticleSystem muzzleFlash;
-	public ParticleSystem hitEffect;
-	public float hitForce = 60f;
-	// Use this for initialization
-	private void Start () {
-		hitEffect.Stop();
-	}
-	
-	// Update is called once per frame
-	private void Update () {
-		if(Input.GetButton("Fire1") && Time.time >= nextFire){
-			nextFire = Time.time + 1f / fireRate;
-			Shoot();
-		}
-	}
+    public float fireRate = 10f;
+    public float nextFire = 0f;
+    public float damageAmount = 100f;
+    public float range = 100f;
+    public Camera playerCamera;
+    public ParticleSystem muzzleFlash;
+    public ParticleSystem impactSand;
+    public ParticleSystem impactConcrete;
+    public ParticleSystem impactWood;
+    public float hitForce = 60f;
+    // Use this for initialization
+    private void Start()
+    {
+        muzzleFlash.Stop();
+    }
 
-	private void Shoot(){
-		muzzleFlash.Play();
+    // Update is called once per frame
+    private void Update()
+    {
+        if (Input.GetButton("Fire1") && Time.time >= nextFire)
+        {
+            nextFire = Time.time + 1f / fireRate;
+            Shoot();
+        }
+    }
 
-		RaycastHit hit;
-		if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, range)){
-			Debug.Log(hit.transform.name);
-			Target target = hit.transform.GetComponent<Target>();
-			if(target != null){
-				target.TakeDamage(damageAmount);
-			}
+    private void Shoot()
+    {
+        muzzleFlash.Play();
 
-			if(hit.rigidbody != null){
-				hit.rigidbody.AddForce(-hit.normal * hitForce);
-			}
+        RaycastHit hit;
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, range))
+        {
 
-			GameObject hitObject = Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal)).gameObject;
-			Destroy(hitObject, 0.5f);
-		}
-	}
+            // Reduce health amount of the specified target
+            Target target = hit.transform.GetComponent<Target>();
+            if (target != null)
+            {
+                target.TakeDamage(damageAmount);
+            }
+
+            // Slightly move the object when being hit by the weapon
+            if (hit.rigidbody != null)
+            {
+                hit.rigidbody.AddForce(-hit.normal * hitForce);
+            }
+
+            // Determine what type of object is being hit based on tag
+            if (hit.transform.gameObject.tag != "" || hit.transform.gameObject.tag == "Untagged")
+            {
+                ParticleSystem impactEffect = null;
+                switch (hit.transform.gameObject.tag)
+                {
+                    case "Wood":
+                        impactEffect = impactWood;
+                        break;
+                    case "Sand":
+                        impactEffect = impactSand;
+                        break;
+                    case "Concrete":
+                        impactEffect = impactConcrete;
+                        break;
+
+                }
+
+                // Render impact effect
+                GameObject hitObject = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal)).gameObject;
+                Destroy(hitObject, 2f);
+            }
+        }
+    }
 }
