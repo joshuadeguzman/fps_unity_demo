@@ -15,10 +15,16 @@ public class Weapon : MonoBehaviour
     public ParticleSystem impactConcrete;
     public ParticleSystem impactWood;
     public float hitForce = 60f;
+    public AudioClip soundFireShot;
+    private AudioSource weaponAudioSource;
+    private float lowPitchRange = .75F;
+    private float highPitchRange = 1.5F;
+
     // Use this for initialization
     private void Start()
     {
         muzzleFlash.Stop();
+		weaponAudioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -33,6 +39,7 @@ public class Weapon : MonoBehaviour
 
     private void Shoot()
     {
+		PlayFireSound();
         muzzleFlash.Play();
 
         RaycastHit hit;
@@ -74,6 +81,13 @@ public class Weapon : MonoBehaviour
                 GameObject hitObject = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal)).gameObject;
                 Destroy(hitObject, 2f);
             }
+
         }
+    }
+
+    private void PlayFireSound()
+    {
+        weaponAudioSource.pitch = Random.Range(lowPitchRange, highPitchRange);
+		weaponAudioSource.PlayOneShot(soundFireShot);
     }
 }
