@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
@@ -24,7 +22,7 @@ public class Weapon : MonoBehaviour
     private void Start()
     {
         muzzleFlash.Stop();
-		weaponAudioSource = GetComponent<AudioSource>();
+        weaponAudioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -34,12 +32,12 @@ public class Weapon : MonoBehaviour
         {
             nextFire = Time.time + 1f / fireRate;
             Shoot();
+            PlayFireSound();
         }
     }
 
     private void Shoot()
     {
-		PlayFireSound();
         muzzleFlash.Play();
 
         RaycastHit hit;
@@ -74,20 +72,18 @@ public class Weapon : MonoBehaviour
                     case "Concrete":
                         impactEffect = impactConcrete;
                         break;
-
                 }
 
                 // Render impact effect
                 GameObject hitObject = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal)).gameObject;
                 Destroy(hitObject, 2f);
             }
-
         }
     }
 
     private void PlayFireSound()
     {
         weaponAudioSource.pitch = Random.Range(lowPitchRange, highPitchRange);
-		weaponAudioSource.PlayOneShot(soundFireShot);
+        weaponAudioSource.PlayOneShot(soundFireShot);
     }
 }
