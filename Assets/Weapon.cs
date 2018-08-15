@@ -9,6 +9,7 @@ public class Weapon : MonoBehaviour
     public float range = 100f;
     public Camera playerCamera;
     public ParticleSystem muzzleFlash;
+    public ParticleSystem impactDefault;
     public ParticleSystem impactSand;
     public ParticleSystem impactConcrete;
     public ParticleSystem impactWood;
@@ -31,8 +32,8 @@ public class Weapon : MonoBehaviour
         if (Input.GetButton("Fire1") && Time.time >= nextFire)
         {
             nextFire = Time.time + 1f / fireRate;
-            Shoot();
             PlayFireSound();
+            Shoot();
         }
     }
 
@@ -58,9 +59,9 @@ public class Weapon : MonoBehaviour
             }
 
             // Determine what type of object is being hit based on tag
-            if (hit.transform.gameObject.tag != "" || hit.transform.gameObject.tag == "Untagged")
+            ParticleSystem impactEffect = impactDefault;
+            if (hit.transform.gameObject.tag != "" || hit.transform.gameObject.tag != "Untagged")
             {
-                ParticleSystem impactEffect = null;
                 switch (hit.transform.gameObject.tag)
                 {
                     case "Wood":
@@ -73,11 +74,11 @@ public class Weapon : MonoBehaviour
                         impactEffect = impactConcrete;
                         break;
                 }
-
-                // Render impact effect
-                GameObject hitObject = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal)).gameObject;
-                Destroy(hitObject, 2f);
             }
+
+            // Render impact effect
+            GameObject hitObject = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal)).gameObject;
+            Destroy(hitObject, 2f);
         }
     }
 

@@ -4238,6 +4238,7 @@ MonoBehaviour:
   range: 100
   playerCamera: {fileID: 1038666093}
   muzzleFlash: {fileID: 1684519319}
+  impactDefault: {fileID: 19800002, guid: 3b1513bcb86426b4795879be6a128ed7, type: 2}
   impactSand: {fileID: 1038622085}
   impactConcrete: {fileID: 293284908}
   impactWood: {fileID: 321826084}
