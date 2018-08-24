@@ -2,8 +2,6 @@
 
 public class PlayerController : MonoBehaviour
 {
-
-
     public bool isRunning;
     public float walkSpeed = 3f;
     public float runSpeed = 10f;
@@ -19,7 +17,6 @@ public class PlayerController : MonoBehaviour
         rbPlayer = GetComponent<Rigidbody>();
         jump = new Vector3(0f, jumpForce, 0f);
     }
-
 
     /*
         Update() can vary out of step with the physics engine, either faster or slower, 

@@ -2,7 +2,6 @@
 
 public class Weapon : MonoBehaviour
 {
-
     public float fireRate = 10f;
     public float nextFire = 0f;
     public float damageAmount = 100f;
