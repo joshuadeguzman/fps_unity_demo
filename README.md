@@ -2,6 +2,7 @@
 A demonstrable FPS (First Person Shooting) game made with Unity and C#
 
 ### Download Assets
+* [3rdPartyPackages Used (Compiled)](https://drive.google.com/open?id=1Ol59l4HWhlO6zkIdGXG78XkLqga5mMq9)
 * [Dessert Environment](http://devassets.com/assets/desert-environment/)
 * [Sci-Fi Weapons](http://devassets.com/assets/sci-fi-weapons/)
 * [Western Props](http://devassets.com/assets/sci-fi-weapons/)
